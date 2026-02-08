@@ -1,0 +1,16 @@
+# Node.js
+front-end/node_modules/
+front-end/dist/
+front-end/.env*
+
+# Java/Maven
+back-end/target/
+back-end/*.log
+back-end/.mvn/
+back-end/mvnw*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.DS_Store
