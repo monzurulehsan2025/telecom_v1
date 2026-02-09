@@ -3,22 +3,11 @@ import { Activity, Zap, ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react
 import type { Metric } from '../types';
 import { motion } from 'framer-motion';
 
-export const MetricsGrid: React.FC = () => {
-    const [metrics, setMetrics] = React.useState<Metric[]>([]);
+interface MetricsGridProps {
+    metrics: Metric[];
+}
 
-    React.useEffect(() => {
-        const fetchMetrics = () => {
-            fetch('/api/metrics')
-                .then(res => res.json())
-                .then(data => setMetrics(data))
-                .catch(err => console.error('Error fetching metrics:', err));
-        };
-
-        fetchMetrics();
-        const interval = setInterval(fetchMetrics, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
+export const MetricsGrid: React.FC<MetricsGridProps> = ({ metrics }) => {
     if (metrics.length === 0) return (
         <div className="grid-metrics">
             {[1, 2, 3, 4].map(i => (

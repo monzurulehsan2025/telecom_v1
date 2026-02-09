@@ -3,21 +3,11 @@ import { CheckCircle2, AlertCircle, Clock, Cpu, Activity } from 'lucide-react';
 import type { AgentStatus } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const StatusPanel: React.FC = () => {
-    const [agents, setAgents] = React.useState<AgentStatus[]>([]);
+interface StatusPanelProps {
+    agents: AgentStatus[];
+}
 
-    React.useEffect(() => {
-        const fetchAgents = () => {
-            fetch('/api/agents')
-                .then(res => res.json())
-                .then(data => setAgents(data))
-                .catch(err => console.error('Error fetching agents:', err));
-        };
-
-        fetchAgents();
-        const interval = setInterval(fetchAgents, 1000);
-        return () => clearInterval(interval);
-    }, []);
+export const StatusPanel: React.FC<StatusPanelProps> = ({ agents }) => {
 
     return (
         <div className="glass panel animate-in" style={{ animationDelay: '0.4s' }}>

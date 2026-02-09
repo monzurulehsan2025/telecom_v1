@@ -4,8 +4,11 @@ import { MetricsGrid } from './components/MetricsGrid';
 import { PerformanceChart } from './components/PerformanceChart';
 import { StatusPanel } from './components/StatusPanel';
 import { motion } from 'framer-motion';
+import { useDashboardSocket } from './hooks/useDashboardSocket';
 
 const App: React.FC = () => {
+    const { metrics, agents, performance, connected } = useDashboardSocket();
+
     return (
         <div className="container">
             <header className="animate-in">
@@ -36,6 +39,10 @@ const App: React.FC = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', background: 'rgba(255,255,255,0.03)', borderRadius: '20px' }}>
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: connected ? 'var(--success)' : 'var(--danger)', boxShadow: connected ? '0 0 8px var(--success)' : 'none' }}></div>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{connected ? 'Live' : 'Disconnected'}</span>
+                    </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                         {[Bell, Settings, LayoutDashboard].map((Icon, idx) => (
                             <motion.button
@@ -71,9 +78,9 @@ const App: React.FC = () => {
                 <div className="animate-in" style={{ marginBottom: '3rem', animationDelay: '0.1s' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                         <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--primary)', marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: connected ? 'var(--primary)' : 'var(--danger)', marginBottom: '8px' }}>
                                 <Activity size={18} />
-                                <span style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.1em' }}>PLATFORM STATUS: OPERATIONAL</span>
+                                <span style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.1em' }}>{connected ? 'PLATFORM STATUS: OPERATIONAL' : 'OFFLINE: RECONNECTING...'}</span>
                             </div>
                             <h2 style={{ fontSize: '2.5rem', color: 'var(--text-main)', marginBottom: '0.5rem', letterSpacing: '-1px' }}>Infrastructure Overview</h2>
                             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px' }}>
@@ -101,11 +108,11 @@ const App: React.FC = () => {
                     </div>
                 </div>
 
-                <MetricsGrid />
+                <MetricsGrid metrics={metrics} />
 
                 <div className="main-content">
-                    <PerformanceChart />
-                    <StatusPanel />
+                    <PerformanceChart data={performance} />
+                    <StatusPanel agents={agents} />
                 </div>
 
                 <footer className="animate-in" style={{ marginTop: '6rem', padding: '4rem 0', borderTop: '1px solid var(--border)', textAlign: 'center', animationDelay: '0.6s' }}>

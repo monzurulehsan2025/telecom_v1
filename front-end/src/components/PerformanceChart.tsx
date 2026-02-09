@@ -2,21 +2,11 @@ import * as React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 
-export const PerformanceChart: React.FC = () => {
-    const [data, setData] = React.useState<any[]>([]);
+interface PerformanceChartProps {
+    data: any[];
+}
 
-    React.useEffect(() => {
-        const fetchPerformance = () => {
-            fetch('/api/performance')
-                .then(res => res.json())
-                .then(data => setData(data))
-                .catch(err => console.error('Error fetching performance data:', err));
-        };
-
-        fetchPerformance();
-        const interval = setInterval(fetchPerformance, 1000);
-        return () => clearInterval(interval);
-    }, []);
+export const PerformanceChart: React.FC<PerformanceChartProps> = ({ data }) => {
 
     return (
         <motion.div
