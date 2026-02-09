@@ -1,16 +1,21 @@
 import * as React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const PerformanceChart: React.FC = () => {
     const [data, setData] = React.useState<any[]>([]);
 
     React.useEffect(() => {
-        fetch('http://localhost:8080/api/performance')
-            .then(res => res.json())
-            .then(data => setData(data))
-            .catch(err => console.error('Error fetching performance data:', err));
+        const fetchPerformance = () => {
+            fetch('/api/performance')
+                .then(res => res.json())
+                .then(data => setData(data))
+                .catch(err => console.error('Error fetching performance data:', err));
+        };
+
+        fetchPerformance();
+        const interval = setInterval(fetchPerformance, 1000);
+        return () => clearInterval(interval);
     }, []);
 
     return (

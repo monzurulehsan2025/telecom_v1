@@ -11,38 +11,39 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Random;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:5173")
 public class DashboardController {
+    private final Random random = new Random();
 
     @GetMapping("/metrics")
     public List<Metric> getMetrics() {
         return Arrays.asList(
-                new Metric("Network Latency", "24ms", "-12%", "down"),
-                new Metric("Lightspeed Throughput", "1.2 TB", "+8%", "up"),
-                new Metric("Active Edge Nodes", "4,821", "+24", "up"),
-                new Metric("System Health", "99.98%", "Stable", "neutral"));
+                new Metric("Network Latency", (20 + random.nextInt(10)) + "ms", "-12%", "down"),
+                new Metric("Lightspeed Throughput", (1.0 + random.nextDouble() * 0.5) + " TB", "+8%", "up"),
+                new Metric("Active Edge Nodes", (4800 + random.nextInt(50)) + "", "+24", "up"),
+                new Metric("System Health", "99." + (90 + random.nextInt(10)) + "%", "Stable", "neutral"));
     }
 
     @GetMapping("/agents")
     public List<AgentStatus> getAgents() {
         return Arrays.asList(
-                new AgentStatus("OA-101", "Northeast Region Node", "online", 12, "48d 12h"),
-                new AgentStatus("OA-102", "Southeast Gateway", "online", 18, "12d 04h"),
-                new AgentStatus("OA-103", "Tristate Backbone", "warning", 85, "156d 22h"),
+                new AgentStatus("OA-101", "Northeast Region Node", "online", 10 + random.nextInt(10), "48d 12h"),
+                new AgentStatus("OA-102", "Southeast Gateway", "online", 15 + random.nextInt(10), "12d 04h"),
+                new AgentStatus("OA-103", "Tristate Backbone", random.nextBoolean() ? "online" : "warning",
+                        50 + random.nextInt(40), "156d 22h"),
                 new AgentStatus("OA-104", "West Coast Liaison", "offline", 0, "0h 0m"));
     }
 
     @GetMapping("/performance")
     public List<Map<String, Object>> getPerformance() {
-        return Arrays.asList(
-                Map.of("time", "00:00", "value", 400),
-                Map.of("time", "04:00", "value", 300),
-                Map.of("time", "08:00", "value", 600),
-                Map.of("time", "12:00", "value", 850),
-                Map.of("time", "16:00", "value", 520),
-                Map.of("time", "20:00", "value", 940),
-                Map.of("time", "23:59", "value", 780));
+        String[] times = { "00:00", "04:00", "08:00", "12:00", "16:00", "20:00", "23:59" };
+        return Arrays.stream(times)
+                .map(time -> Map.of("time", time, "value", (Object) (300 + random.nextInt(700))))
+                .collect(Collectors.toList());
     }
 }

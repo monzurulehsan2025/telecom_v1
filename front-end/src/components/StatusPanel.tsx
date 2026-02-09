@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Server, CheckCircle2, AlertCircle, Clock, Cpu, Activity } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Clock, Cpu, Activity } from 'lucide-react';
 import type { AgentStatus } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -7,10 +7,16 @@ export const StatusPanel: React.FC = () => {
     const [agents, setAgents] = React.useState<AgentStatus[]>([]);
 
     React.useEffect(() => {
-        fetch('http://localhost:8080/api/agents')
-            .then(res => res.json())
-            .then(data => setAgents(data))
-            .catch(err => console.error('Error fetching agents:', err));
+        const fetchAgents = () => {
+            fetch('/api/agents')
+                .then(res => res.json())
+                .then(data => setAgents(data))
+                .catch(err => console.error('Error fetching agents:', err));
+        };
+
+        fetchAgents();
+        const interval = setInterval(fetchAgents, 1000);
+        return () => clearInterval(interval);
     }, []);
 
     return (

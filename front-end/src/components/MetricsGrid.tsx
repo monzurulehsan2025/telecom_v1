@@ -7,10 +7,16 @@ export const MetricsGrid: React.FC = () => {
     const [metrics, setMetrics] = React.useState<Metric[]>([]);
 
     React.useEffect(() => {
-        fetch('http://localhost:8080/api/metrics')
-            .then(res => res.json())
-            .then(data => setMetrics(data))
-            .catch(err => console.error('Error fetching metrics:', err));
+        const fetchMetrics = () => {
+            fetch('/api/metrics')
+                .then(res => res.json())
+                .then(data => setMetrics(data))
+                .catch(err => console.error('Error fetching metrics:', err));
+        };
+
+        fetchMetrics();
+        const interval = setInterval(fetchMetrics, 1000);
+        return () => clearInterval(interval);
     }, []);
 
     if (metrics.length === 0) return (
